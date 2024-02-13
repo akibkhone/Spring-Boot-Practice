@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.codewithzaar.Springbootpractice.entity.Department;
+import com.codewithzaar.Springbootpractice.exception.DepartmentNotFoundException;
 import com.codewithzaar.Springbootpractice.repository.DepartmentRepository;
 
 import lombok.extern.log4j.Log4j;
@@ -25,9 +26,14 @@ public class DepartmentServiceImpl implements DepartmentService
 	}
 
 	@Override
-	public Optional<Department> fetchDepartmentById(Long departmentId)
+	public Optional<Department> fetchDepartmentById(Long departmentId) throws DepartmentNotFoundException
 	{
-		return departmentRepository.findById(departmentId);
+		Optional<Department> department = departmentRepository.findById(departmentId);
+		if (!department.isPresent())
+		{
+			throw new DepartmentNotFoundException("Department not found for departmentId: " + departmentId);
+		}
+		return department;
 	}
 
 	@Override
@@ -59,6 +65,12 @@ public class DepartmentServiceImpl implements DepartmentService
 			existingDepartment.setDepartmentCode(department.getDepartmentCode());
 		}
 		return departmentRepository.save(existingDepartment);
+	}
+
+	@Override
+	public Department fetchDepartmentByName(String departmentName)
+	{
+		return departmentRepository.findTop1ByDepartmentNameIgnoreCase(departmentName);
 	}
 
 }

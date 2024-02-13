@@ -13,4 +13,9 @@ import com.codewithzaar.Springbootpractice.entity.Department;
 public interface DepartmentRepository extends JpaRepository<Department, Long>
 {
 
+	
+	public Department findTop1ByDepartmentName(String departmentName);
+	
+	public Department findTop1ByDepartmentNameIgnoreCase(String departmentName);
+
 }
